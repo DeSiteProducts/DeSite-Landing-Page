@@ -1,0 +1,203 @@
+import type { DesiteProduct } from "../../lib/desiteData";
+import { ProductVideoCarousel } from "../ProductVideoCarousel";
+import { ProductImageCarousel } from "./ProductImageCarousel";
+
+export function ProductCard({
+  product,
+}: {
+  product: DesiteProduct;
+}) {
+  return <ProScreenProductCard product={product} />;
+}
+
+function ProScreenProductCard({ product }: { product: DesiteProduct }) {
+  const isSixtyEightProScreen =
+    product.name.includes("68V") ||
+    Boolean(product.imageAlt?.includes("68 ProScreen"));
+  const modelName = getModelName(product, isSixtyEightProScreen);
+  const detailVariantLabel = getDetailVariantLabel(product.detailVariant);
+  const hasVideos = Boolean(product.videos?.length);
+
+  return (
+    <article className="product-card proscreen-card">
+      <div className="proscreen-top">
+       {/* video column */}
+    <div className="proscreen-video-column">
+      <ProductVideoCarousel
+        videos={product.videos ?? []}
+        label={product.name}
+      />
+
+      {/* PRECIOS JUSTO DEBAJO DEL VIDEO */}
+      <div className="proscreen-prices">
+        {product.SuggestedRetailPrice && (
+          <>
+            <p className="price-label">
+              <strong>Suggested Retail Price</strong>
+            </p>
+            <span className="price price-retail">
+              {product.SuggestedRetailPrice} <small>Euros</small>
+            </span>
+          </>
+        )}
+
+        {product.CostforStockingDealers && (
+          <>
+            <p className="price-label">
+              <strong>Cost for Stocking Dealers</strong>
+            </p>
+            <span className="price price-dealer">
+              {product.CostforStockingDealers} <small>Euros</small>
+            </span>
+          </>
+        )}
+      </div>
+    </div>
+        <div className="proscreen-summary">
+          <div className="proscreen-header">
+            {detailVariantLabel ? <h3>{detailVariantLabel}</h3> : null}
+            <p className="proscreen-model-name">
+              <span className="proscreen-model-main">{modelName.main}</span>
+              {modelName.sub ? (
+                <span className="proscreen-model-sub">{modelName.sub}</span>
+              ) : null}
+            </p>
+          </div>
+
+          <div className="proscreen-intro">
+            <section
+              className="proscreen-inline-specs"
+              aria-label={`${product.name} specifications`}
+            >
+              <ProductHighlights highlights={product.proscreenHighlights ?? []} />
+            </section>
+            
+          </div>
+        </div>
+      </div>
+
+      <div className="proscreen-expanded">
+        <div className="proscreen-list-grid">
+          <ProductFeatureList
+            title="Screen and Recycle"
+            items={product.materials ?? []}
+          />
+          <ProductFeatureList
+            title="Screener Features"
+            items={product.features ?? []}
+          />
+        </div>
+
+       
+      </div>
+       <ProductImageCarousel
+        images={product.images ?? []}
+        label={product.name}
+        imageAlt={`${product.name} product image`}
+      />
+    </article>
+  );
+}
+
+function getDetailVariantLabel(detailVariant?: string) {
+  return detailVariant?.replace(/\s*grizzly\s*/i, " ").trim() ?? "";
+}
+
+function getModelName(
+  product: DesiteProduct,
+  isSixtyEightProScreen: boolean,
+) {
+  if (isSixtyEightProScreen) {
+    return {
+      main: "68V Vibratory",
+      sub: "Mini Screener",
+    };
+  }
+
+  if (product.name.endsWith(" Mini")) {
+    return {
+      main: product.name.replace(" Mini", ""),
+      sub: "Mini",
+    };
+  }
+
+  if (product.name.endsWith(" Grizzly RB")) {
+    return {
+      main: product.name.replace(" Grizzly RB", ""),
+      sub: "Grizzly RB",
+    };
+  }
+  if (product.name.includes(" With Riser Box")) {
+    return {
+      main: product.name.replace(" With Riser Box", ""),
+      sub: "With Riser Box",
+    };
+  }
+
+  return {
+    main: product.name,
+    sub: "",
+  };
+}
+
+function ProductHighlights({
+  highlights,
+}: {
+  highlights: NonNullable<DesiteProduct["proscreenHighlights"]>;
+}) {
+  return (
+    <dl className="proscreen-highlights">
+      {highlights.map((item) => {
+        const value = item.value || "—";
+        const parts = value.split(/(\bto\b)/i);
+
+        return (
+          <div key={item.label}>
+            <dt>{item.label}</dt>
+
+            <dd>
+              {parts.map((part, index) => {
+                if (/^to$/i.test(part)) {
+                  return (
+                    <span key={index}>
+                      {part}
+                      <br />
+                    </span>
+                  );
+                }
+
+                return <span key={index}>{part}</span>;
+              })}
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
+  );
+}
+
+function ProductFeatureList({
+  items,
+  title,
+}: {
+  items: string[];
+  title: string;
+}) {
+  const sectionClassName =
+    title === "Screen and Recycle"
+      ? "proscreen-feature-section proscreen-feature-section-materials"
+      : title === "Screener Features"
+        ? "proscreen-feature-section proscreen-feature-section-features"
+        : "proscreen-feature-section";
+
+  return (
+    <section className={sectionClassName}>
+      <h4>{title}</h4>
+      <ul>
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
