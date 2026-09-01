@@ -59,7 +59,7 @@ export async function POST(request: Request) {
      * Send to Contact Lambda
      */
     const response = await fetch(
-      "https://0gc19khxz3.execute-api.us-east-1.amazonaws.com/default/sendEuDealersemail",
+      "https://bkf3dwerza.execute-api.us-east-1.amazonaws.com/default/SendemailEU",
       {
         method: "POST",
         headers: {
