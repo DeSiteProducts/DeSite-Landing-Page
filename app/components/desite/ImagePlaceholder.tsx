@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 
 export function ImagePlaceholder({
   label,
@@ -12,18 +12,19 @@ export function ImagePlaceholder({
   tall?: boolean;
 }) {
   const isRealImage = path.startsWith("/images/");
-  const isProductPhotoPlaceholder = label === "Product photos coming soon";
-
   if (isRealImage) {
     return (
       <figure
         className={`desite-image-frame ${tall ? "desite-image-frame-tall" : ""}`}
       >
-        <img
+        <Image
           src={path}
           alt={label}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "auto"}
+          fill
+          sizes="(max-width: 600px) calc(100vw - 100px), (max-width: 900px) 40vw, 20vw"
+          priority={priority}
+          quality={85}
+          style={{ objectFit: "cover", objectPosition: "center" }}
         />
       </figure>
     );
