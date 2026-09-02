@@ -93,42 +93,34 @@ function getSavedLanguagePreference(): LanguagePreference | null {
 }
 
 async function getVisitorCountry(): Promise<string | null> {
-    // La consulta del navegador refleja la IP de salida actual, incluso si el
-    // usuario cambia de VPN después de que el CDN haya asignado una región.
-    try {
-        const countryResponse = await fetch("https://api.country.is/", {
-            cache: "no-store",
-        });
-        const data = (await countryResponse.json()) as { country?: string };
-        const country = data.country?.trim().toUpperCase();
-
-        if (country && /^[A-Z]{2}$/.test(country)) {
-            return country;
-        }
-    } catch {
-        // Se prueba un segundo proveedor antes de usar el servidor.
-    }
-
-    try {
-        const ipResponse = await fetch("https://ipapi.co/country/", {
-            cache: "no-store",
-        });
-        const country = (await ipResponse.text()).trim().toUpperCase();
-
-        if (/^[A-Z]{2}$/.test(country)) {
-            return country;
-        }
-    } catch {
-        // Se usa la detección del servidor como último respaldo.
-    }
-
-    // Respaldo para bloqueadores, errores de red o límites del proveedor externo.
     const response = await fetch("/api/visitor-country", {
         cache: "no-store",
     });
     const data = (await response.json()) as { country?: string | null };
+    const serverCountry = data.country?.trim().toUpperCase() ?? null;
 
-    return data.country ?? null;
+    if (serverCountry && /^[A-Z]{2}$/.test(serverCountry)) {
+        return serverCountry;
+    }
+
+    // En localhost el servidor solo recibe 127.0.0.1/::1. Este respaldo se
+    // limita al desarrollo para que las pruebas con VPN reflejen su IP pública
+    // sin añadir una solicitud externa a los visitantes en producción.
+    if (process.env.NODE_ENV !== "development") {
+        return null;
+    }
+
+    try {
+        const response = await fetch("https://api.country.is/", {
+            cache: "no-store",
+        });
+        const data = (await response.json()) as { country?: string };
+        const country = data.country?.trim().toUpperCase();
+
+        return country && /^[A-Z]{2}$/.test(country) ? country : null;
+    } catch {
+        return null;
+    }
 }
 
 declare global {
@@ -143,6 +135,8 @@ export function LanguageSelector() {
 
     const [currentLanguage, setCurrentLanguage] =
         useState<Language>(languages[0]);
+    const [automaticLanguage, setAutomaticLanguage] =
+        useState<Language | null>(null);
 
     const wrapperRef = useRef<HTMLDivElement>(null);
     const detectedCountryRef = useRef<string | null>(null);
@@ -165,6 +159,46 @@ export function LanguageSelector() {
         };
 
         clearGoogleTranslateCookie();
+    }, []);
+
+    useEffect(() => {
+        let mounted = true;
+
+        async function detectLanguage() {
+            try {
+                const country = await getVisitorCountry();
+
+                if (!mounted) {
+                    return;
+                }
+
+                detectedCountryRef.current = country;
+                const savedPreference = getSavedLanguagePreference();
+                const keepManualLanguage = savedPreference && (
+                    !country ||
+                    savedPreference.country === null ||
+                    savedPreference.country === country
+                );
+                const language = keepManualLanguage
+                    ? getLanguage(savedPreference.language)
+                    : getLanguage(country ? languageByCountry[country] ?? "en" : "en");
+
+                if (savedPreference && !keepManualLanguage) {
+                    window.localStorage.removeItem(LANGUAGE_PREFERENCE_KEY);
+                }
+
+                setCurrentLanguage(language);
+                setAutomaticLanguage(language.code === "en" ? null : language);
+            } catch {
+                // Si la geolocalización no está disponible se conserva inglés.
+            }
+        }
+
+        detectLanguage();
+
+        return () => {
+            mounted = false;
+        };
     }, []);
 
 
@@ -263,6 +297,10 @@ export function LanguageSelector() {
 
 
     useEffect(() => {
+        if (!open && !automaticLanguage) {
+            return;
+        }
+
         const hideGoogleInterface = () => {
             /*
              * Banner
@@ -323,10 +361,14 @@ export function LanguageSelector() {
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [automaticLanguage, open]);
 
 
     useEffect(() => {
+        if (!open && !automaticLanguage) {
+            return;
+        }
+
         let mounted = true;
 
         async function initializeGoogleTranslate() {
@@ -403,38 +445,11 @@ export function LanguageSelector() {
 
             await waitForGoogleSelect();
 
-            const savedPreference = getSavedLanguagePreference();
-            let country: string | null = null;
-
-            try {
-                country = await getVisitorCountry();
-                detectedCountryRef.current = country;
-            } catch {
-                country = null;
-            }
-
-            const detectedLanguage = getLanguage(
-                country ? languageByCountry[country] ?? "en" : "en"
-            );
-            const keepManualLanguage = savedPreference && (
-                !country ||
-                savedPreference.country === null ||
-                savedPreference.country === country
-            );
-            const language = keepManualLanguage
-                ? getLanguage(savedPreference.language)
-                : detectedLanguage;
-
-            if (savedPreference && !keepManualLanguage) {
-                window.localStorage.removeItem(LANGUAGE_PREFERENCE_KEY);
-            }
-
-            if (language.code === "en") {
-                setCurrentLanguage(language);
+            if (!automaticLanguage) {
                 return;
             }
 
-            const select = await waitForGoogleLanguageOption(language.code);
+            const select = await waitForGoogleLanguageOption(automaticLanguage.code);
 
             if (!select || !mounted) {
                 return;
@@ -449,9 +464,9 @@ export function LanguageSelector() {
                 return;
             }
 
-            select.value = language.code;
+            select.value = automaticLanguage.code;
             select.dispatchEvent(new Event("change", { bubbles: true }));
-            setCurrentLanguage(language);
+            setCurrentLanguage(automaticLanguage);
         }
 
         initializeGoogleTranslate();
@@ -459,7 +474,7 @@ export function LanguageSelector() {
         return () => {
             mounted = false;
         };
-    }, []);
+    }, [automaticLanguage, open]);
 
     useEffect(() => {
         function handleClickOutside(

@@ -31,7 +31,7 @@ export function ProductVideoCarousel({
           observer.disconnect();
         }
       },
-      { rootMargin: "300px 0px" },
+      { rootMargin: "0px" },
     );
 
     observer.observe(stage);
