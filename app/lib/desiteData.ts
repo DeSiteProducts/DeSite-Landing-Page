@@ -384,8 +384,8 @@ export const products: DesiteProduct[] = [
       "/images/48/Side481.webp",
       "/images/48/48Suspension.webp",
       "/images/48/48Wheels.webp",
-      "/images/48/48inAction1.webp",
-      "/images/48/48inAction2.webp",
+      "/images/48/48InAction1.webp",
+      "/images/48/48InAction2.webp",
       "/images/48/48InAction3.webp",
       "/images/48/48InAction4.webp",
       
