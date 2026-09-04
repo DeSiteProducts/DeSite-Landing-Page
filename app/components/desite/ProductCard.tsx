@@ -36,7 +36,7 @@ function ProScreenProductCard({ product }: { product: DesiteProduct }) {
               <strong>Suggested Retail Price</strong>
             </p>
             <span className="price price-retail">
-              {product.SuggestedRetailPrice} <small>Euros</small>
+              {product.SuggestedRetailPrice} <small>GBP</small>
             </span>
           </>
         )}
@@ -47,7 +47,7 @@ function ProScreenProductCard({ product }: { product: DesiteProduct }) {
               <strong>Cost for Stocking Dealers</strong>
             </p>
             <span className="price price-dealer">
-              {product.CostforStockingDealers} <small>Euros</small>
+              {product.CostforStockingDealers} <small>GBP</small>
             </span>
           </>
         )}
