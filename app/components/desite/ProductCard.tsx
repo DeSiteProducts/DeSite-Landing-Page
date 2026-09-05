@@ -58,7 +58,7 @@ function ProScreenProductCard({ product }: { product: DesiteProduct }) {
 
             {/* COLUMNA DERECHA - DESCUENTO */}
             <div className="proscreen-discount">
-              <strong>30% Discounts</strong>
+              <strong>30% <br></br>Discounts</strong>
             </div>
 
           </div>
