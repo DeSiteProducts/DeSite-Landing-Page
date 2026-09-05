@@ -21,38 +21,48 @@ function ProScreenProductCard({ product }: { product: DesiteProduct }) {
   return (
     <article className="product-card proscreen-card">
       <div className="proscreen-top">
-       {/* video column */}
-    <div className="proscreen-video-column">
-      <ProductVideoCarousel
-        videos={product.videos ?? []}
-        label={product.name}
-      />
+        {/* video column */}
+        <div className="proscreen-video-column">
+          <ProductVideoCarousel
+            videos={product.videos ?? []}
+            label={product.name}
+          />
 
-      {/* PRECIOS JUSTO DEBAJO DEL VIDEO */}
-      <div className="proscreen-prices">
-        {product.SuggestedRetailPrice && (
-          <>
-            <p className="price-label">
-              <strong>Suggested Retail Price</strong>
-            </p>
-            <span className="price price-retail">
-              {product.SuggestedRetailPrice} <small>GBP</small>
-            </span>
-          </>
-        )}
+          {/* PRECIOS Y DESCUENTO JUSTO DEBAJO DEL VIDEO */}
+          <div className="proscreen-pricing-container">
 
-        {product.CostforStockingDealers && (
-          <>
-            <p className="price-label">
-              <strong>Cost for Stocking Dealers</strong>
-            </p>
-            <span className="price price-dealer">
-              {product.CostforStockingDealers} <small>GBP</small>
-            </span>
-          </>
-        )}
-      </div>
-    </div>
+            {/* COLUMNA IZQUIERDA - PRECIOS */}
+            <div className="proscreen-prices">
+              {product.SuggestedRetailPrice && (
+                <>
+                  <p className="price-label">
+                    <strong>Suggested Retail Price</strong>
+                  </p>
+                  <span className="price price-retail">
+                    {product.SuggestedRetailPrice} <small>GBP</small>
+                  </span>
+                </>
+              )}
+
+              {product.CostforStockingDealers && (
+                <>
+                  <p className="price-label">
+                    <strong>Cost for Stocking Dealers</strong>
+                  </p>
+                  <span className="price price-dealer">
+                    {product.CostforStockingDealers} <small>GBP</small>
+                  </span>
+                </>
+              )}
+            </div>
+
+            {/* COLUMNA DERECHA - DESCUENTO */}
+            <div className="proscreen-discount">
+              <strong>30% Discounts</strong>
+            </div>
+
+          </div>
+        </div>
         <div className="proscreen-summary">
           <div className="proscreen-header">
             {detailVariantLabel ? <h3>{detailVariantLabel}</h3> : null}
@@ -71,7 +81,7 @@ function ProScreenProductCard({ product }: { product: DesiteProduct }) {
             >
               <ProductHighlights highlights={product.proscreenHighlights ?? []} />
             </section>
-            
+
           </div>
         </div>
       </div>
@@ -88,9 +98,9 @@ function ProScreenProductCard({ product }: { product: DesiteProduct }) {
           />
         </div>
 
-       
+
       </div>
-       <ProductImageCarousel
+      <ProductImageCarousel
         images={product.images ?? []}
         label={product.name}
         imageAlt={`${product.name} product image`}

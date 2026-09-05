@@ -136,8 +136,8 @@ export const products: DesiteProduct[] = [
     "Rugged, 5 Year Structure Warranty",
     "Screener weight 700kg"
   ],
-  SuggestedRetailPrice: "4,400",
-  CostforStockingDealers: "3,100",
+  SuggestedRetailPrice: "4,650",
+  CostforStockingDealers: "3,250",
 
   },
  
@@ -227,8 +227,8 @@ export const products: DesiteProduct[] = [
     "Rugged, 5 Year Structure Warranty",
     "Screener weight 725kg"
   ],
-  SuggestedRetailPrice: "4,500",
-  CostforStockingDealers: "3,150",
+  SuggestedRetailPrice: "4,750",
+  CostforStockingDealers: "3,325",
 
 
   },
@@ -283,8 +283,8 @@ export const products: DesiteProduct[] = [
     "Rugged, 5 Year Structure Warranty",
     "Screener weight 500kg"
   ],
-  SuggestedRetailPrice: "4,500",
-  CostforStockingDealers: "3,150",
+  SuggestedRetailPrice: "4,750",
+  CostforStockingDealers: "3,325",
  
   },
   {
@@ -366,8 +366,8 @@ export const products: DesiteProduct[] = [
     "Rugged, 5 Year Structure Warranty",
     "Screener weight 350kg"
   ],
-  SuggestedRetailPrice: "1,900",
-  CostforStockingDealers: "1,330",
+  SuggestedRetailPrice: "2,250",
+  CostforStockingDealers: "1,600",
   },
  {
     name: "SLG 48 Mini",
@@ -434,8 +434,8 @@ export const products: DesiteProduct[] = [
     "Rugged, 5 Year Structure Warranty",
     "Screener weight 350kg"
   ],
-  SuggestedRetailPrice: "1,900",
-  CostforStockingDealers: "1,330",
+  SuggestedRetailPrice: "2,250",
+  CostforStockingDealers: "1,600",
   },
   
 

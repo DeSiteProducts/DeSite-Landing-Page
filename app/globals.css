@@ -2738,3 +2738,54 @@ textarea::placeholder {
     width: 170px;
   }
 }
+.proscreen-pricing-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* Columna de precios */
+.proscreen-prices {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Columna del descuento */
+.proscreen-discount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.proscreen-discount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+ font-size: clamp(32px, 3.5vw, 50px);
+  font-weight: 700;
+
+  color: red;
+
+  -webkit-text-stroke: 4px white;
+  paint-order: stroke fill;
+  text-shadow:
+    2px 2px 4px rgba(242, 239, 239, 0.35),
+    -2px -2px 4px rgba(232, 222, 222, 0.15);
+}
+@media (max-width: 600px) {
+  .proscreen-pricing-container {
+    grid-template-columns: 1fr;
+  }
+
+  .proscreen-discount {
+    margin-top: 20px;
+  }
+}
