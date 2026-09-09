@@ -2780,6 +2780,10 @@ textarea::placeholder {
     2px 2px 4px rgba(242, 239, 239, 0.35),
     -2px -2px 4px rgba(232, 222, 222, 0.15);
 }
+.discount-percent {
+  font-size: clamp(56px, 6vw, 84px);
+  font-weight: 800;
+}
 @media (max-width: 600px) {
   .proscreen-pricing-container {
     grid-template-columns: 1fr;
