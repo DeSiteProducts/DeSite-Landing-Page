@@ -46,10 +46,6 @@ export async function POST(request: Request) {
       key, toStringValue(formData.get(key)).replace(/[\r\n<>]/g, " ").slice(0, 253),
     ]));
     attribution.traffic_source ||= "unknown";
-    const sourceDetails = attributionFields
-      .filter((key) => attribution[key])
-      .map((key) => `${key}: ${attribution[key]}`)
-      .join("\n");
 
     /*
      * Validate required fields
@@ -80,7 +76,7 @@ export async function POST(request: Request) {
           phone,
           email,
           ...attribution,
-          message: `${message}\n\n--- Visit attribution ---\n${sourceDetails}`,
+          message,
         }),
       }
     );

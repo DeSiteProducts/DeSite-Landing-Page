@@ -5,8 +5,9 @@
 The contact form captures the first entry in each browser tab, persists it in
 `sessionStorage`, and submits `traffic_source`, `utm_source`, `utm_medium`,
 `utm_campaign`, and `referrer_host` to `/api/contact`. The API forwards these fields
-to the existing AWS Lambda and appends them to `message` so the existing email
-template can display them without requiring a Lambda change.
+to the existing AWS Lambda separately from `message`. The Lambda email template
+displays these fields in its Visit attribution section; `message` contains only
+the visitor's message.
 
 Add these query strings to the landing page URL used in campaigns:
 
