@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { VisitAttributionTracker } from "./components/desite/ContactAttribution";
 import "./globals.css";
 
 const gaId = "G-7GPLCVE8BP";
@@ -44,6 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <VisitAttributionTracker />
         {/* Google Analytics */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}

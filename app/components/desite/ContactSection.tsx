@@ -1,5 +1,6 @@
 import { PrimaryButton, SecondaryButton } from "./Buttons";
 import { SectionContainer } from "./SectionContainer";
+import { ContactAttribution } from "./ContactAttribution";
 
 export function ContactSection({
   showError = false,
@@ -47,6 +48,7 @@ export function ContactSection({
             aria-label="Contact DeSite form"
             action="/api/contact"
             method="POST">
+            <ContactAttribution />
             <div className="form-field">
               <label htmlFor="name">Name</label>
               <input id="name" name="name" type="text" autoComplete="name" required />

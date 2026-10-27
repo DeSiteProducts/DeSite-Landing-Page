@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { attributionFields } from "../../lib/attribution";
 
 function toStringValue(value: FormDataEntryValue | null): string {
   return typeof value === "string" ? value.trim() : "";
@@ -41,6 +42,14 @@ export async function POST(request: Request) {
     const phone = toStringValue(formData.get("phone"));
     const email = toStringValue(formData.get("email"));
     const message = toStringValue(formData.get("message"));
+    const attribution = Object.fromEntries(attributionFields.map((key) => [
+      key, toStringValue(formData.get(key)).replace(/[\r\n<>]/g, " ").slice(0, 253),
+    ]));
+    attribution.traffic_source ||= "unknown";
+    const sourceDetails = attributionFields
+      .filter((key) => attribution[key])
+      .map((key) => `${key}: ${attribution[key]}`)
+      .join("\n");
 
     /*
      * Validate required fields
@@ -70,7 +79,8 @@ export async function POST(request: Request) {
           company,
           phone,
           email,
-          message,
+          ...attribution,
+          message: `${message}\n\n--- Visit attribution ---\n${sourceDetails}`,
         }),
       }
     );
